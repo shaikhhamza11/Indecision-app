@@ -3,6 +3,7 @@ import AddOption from './AddOption'
 import Header from "./Header"
 import Action from './Action'
 import Options from './Options'
+import OptionModal from "./OptionModal"
 
 
 
@@ -13,8 +14,10 @@ export default class IndecisionApp extends React.Component {
         this.handlePick = this.handlePick.bind(this)
         this.handleAddOption = this.handleAddOption.bind(this)
         this.handleDeleteOption = this.handleDeleteOption.bind(this)
+        this.handleRemoveModalOption = this.handleRemoveModalOption.bind(this)
         this.state = {
-            options: props.options
+            options: props.options,
+            selectedOption: undefined
         }
     }
     //lifecycle Function
@@ -40,6 +43,12 @@ export default class IndecisionApp extends React.Component {
 
         }
     }
+    //remove selectedOption for modal
+    handleRemoveModalOption() {
+        this.setState(() => ({
+            selectedOption: undefined
+        }))
+    }
     //delete all
 
     handleDeleteOptions() {
@@ -51,12 +60,14 @@ export default class IndecisionApp extends React.Component {
     handlePick() {
         const random = Math.floor(Math.random() * this.state.options.length)
         const option = this.state.options[random]
-        alert(option)
+        this.setState(() => ({
+            selectedOption: option
+        }))
     }
     //handleaddoption
     handleAddOption(option) {
         if (!option) {
-            console.log(testing)
+
             return "Please type an Option"
         }
         else if (this.state.options.indexOf(option) > -1) {
@@ -84,13 +95,18 @@ export default class IndecisionApp extends React.Component {
             <div>
 
                 <Header subtitle={subtitle} />
-                <Action hasOptions={this.state.options.length > 0} handlePick={this.handlePick} />
-                <Options
-                    options={this.state.options}
-                    handleDeleteOptions={this.handleDeleteOptions}
-                    handleDeleteOption={this.handleDeleteOption}
-                    hasOptions={this.state.options.length > 0} />
-                <AddOption handleAddOption={this.handleAddOption} />
+                <div className="container">
+                    <div className="widget">
+                        <Action hasOptions={this.state.options.length > 0} handlePick={this.handlePick} />
+                        <Options
+                            options={this.state.options}
+                            handleDeleteOptions={this.handleDeleteOptions}
+                            handleDeleteOption={this.handleDeleteOption}
+                            hasOptions={this.state.options.length > 0} />
+                        <AddOption handleAddOption={this.handleAddOption} />
+                    </div>
+                </div>
+                <OptionModal selectedOption={this.state.selectedOption} handleRemoveModalOption={this.handleRemoveModalOption} />
 
             </div>
         );
